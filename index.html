@@ -212,6 +212,9 @@
     border-bottom: 1px solid var(--border);
     font-size: 13px;
     color: var(--muted);
+    position: sticky;
+    top: 42px;
+    z-index: 99;
   }
 
   .filter-bar.active { display: flex; }
@@ -230,6 +233,53 @@
   .review-text { font-size: 13px; color: #aaa; line-height: 1.6; }
 
   .empty { padding: 0; color: var(--muted); font-size: 14px; }
+
+  .recent-covers {
+    padding: 0 0 1.5rem 0;
+  }
+
+  .recent-covers h3 {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+
+  .recent-grid {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .recent-cover {
+    width: clamp(60px, 15vw, 80px);
+    height: clamp(60px, 15vw, 80px);
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s;
+    flex-shrink: 0;
+  }
+
+  .recent-cover:hover {
+    border-color: var(--accent);
+    transform: scale(1.04);
+  }
+
+  .recent-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
 
   footer {
     border-top: 1px solid var(--border);
@@ -390,7 +440,13 @@ function render() {
 
   if (filtered.length === 0) {
     if (!activeLetter && !activeFilter && !document.getElementById('search').value.trim()) {
-      content.innerHTML = '<p class="empty">Wybierz literę z panelu powyżej lub wpisz frazę w wyszukiwarce.</p>';
+      const recent = [...reviews].reverse().slice(0, 10);
+      const coversHTML = recent.map(r => `
+        <div class="recent-cover" onclick="selectLetter('${getKey(r.artist)}')" title="${r.artist} — ${r.album}">
+          ${r.cover ? `<img src="${r.cover}" alt="${r.album}">` : '🎵'}
+        </div>
+      `).join('');
+      content.innerHTML = `<div class="recent-covers"><h3>Ostatnio dodane</h3><div class="recent-grid">${coversHTML}</div></div>`;
     } else {
       content.innerHTML = '<p class="empty">Brak recenzji pasujących do wyszukiwania.</p>';
     }
