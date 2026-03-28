@@ -600,7 +600,8 @@ const reviews = [
    LOGIKA STRONY — nie musisz tego edytować
 ============================================= */
 
-const dateStr = new Date().toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' });
+const now = new Date();
+const dateStr = now.toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' }) + ', ' + now.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit', hour12: false });
 document.getElementById('last-update').textContent = dateStr;
 document.getElementById('footer-year').textContent = new Date().getFullYear();
 
