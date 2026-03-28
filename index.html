@@ -265,30 +265,45 @@
     font-style: italic;
   }
 
+  .filter-link {
+    cursor: pointer;
+    border-bottom: 1px dotted var(--muted);
+    transition: color 0.15s;
+  }
+
+  .filter-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .filter-bar {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .filter-bar.active { display: flex; }
+
+  .filter-bar strong { color: var(--accent); }
+
+  .clear-filter {
+    margin-left: auto;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 12px;
+    border-bottom: 1px dotted var(--muted);
+  }
+
+  .clear-filter:hover { color: var(--text); }
+
   .review-text {
     font-size: 13px;
     color: #aaa;
     line-height: 1.6;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 
-  /* GENRE TAG */
-  .genre-tag {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--accent2);
-    border: 1px solid var(--accent2);
-    border-radius: 20px;
-    padding: 2px 8px;
-    margin-right: 6px;
-    margin-top: 2px;
-  }
 
   /* EMPTY STATE */
   .empty {
@@ -318,9 +333,10 @@
 <body>
 
 <header>
-  <h1>Moje<br>recenzje <span>muzyczne</span></h1>
+  <h1>Recenzje<br>z <span>Klanu</span></h1>
   <div class="header-meta">
-    <strong id="total-count">0</strong> recenzji
+    <strong id="total-count">0</strong> recenzji<br>
+    <span>Ostatnia aktualizacja: <strong id="last-update"></strong></span>
   </div>
 </header>
 
@@ -328,13 +344,14 @@
   <input type="text" id="search" placeholder="Szukaj wykonawcy lub albumu..." oninput="filterAndRender()" />
 </div>
 
+<div class="filter-bar" id="filter-bar">Filtrujesz po: <strong id="filter-label"></strong><span class="clear-filter" onclick="clearFilter()">Wyczyść filtr</span></div>
 <div class="layout">
   <nav class="alpha-sidebar" id="sidebar"></nav>
   <main class="main-content" id="content"></main>
 </div>
 
 <footer>
-  &copy; Recenzje z Klanu &mdash; zaktualizowano <span id="update-date"></span>
+  &copy; Moje recenzje muzyczne &mdash; zaktualizowano <span id="update-date"></span>
 </footer>
 
 <script>
@@ -360,11 +377,10 @@ const reviews = [
     album: "Żeby było miło",
     artist: "Bolec",
     year: 1997,
-    genre: "Hip-Hop",
     cover: "https://panaes.github.io/recenzje/covers/bolec-zeby_bylo_milo.jpg",  // wklej tu URL okładki, np. "https://panaes.github.io/recenzje/covers/okladka.jpg"
     author: "DJ Splif",
     publication: "Magazyn Klan nr 1 (1997)",
-    text: "Rewelacyjna płyta. Prawdziwy rodzynek na polskim rynku hip-hopowym. Każdy numer na płycie niesie ze sobą ciekawą treść, złożoną ze świetnych rymów, które zaskakują swobodą ułożenia we frazie. Bolec pisząc najwyraźniej czuje się jak ryba w wodzie. Teksty są zarówno lekkie, jak i trudniejsze i ostre. Słowo wsparte jest solidnymi samplami i bardzo dobrym miksem. Ciekawe przeskoki od standardów (\"Lolita\", \"Mój czas\") do psychodelicznych wręcz trip-hop'owych brzmień (\"Dym\", \"Branża\"). Bolec naprawdę się postarał, jeśli wziąć pod uwagę, że muzyka i słowa na krążku są wyłącznie jego roboty. Mam nadzieję, że ta płyta spodoba wam się tak bardzo, jak mi. Na pewno nie można jej pominąć. 4/5"
+    text: "Rewelacyjna płyta. Prawdziwy rodzynek na polskim rynku hip-hopowym. Każdy numer na płycie niesie ze sobą ciekawą treść, złożoną ze świetnych rymów, które zaskakują swobodą ułożenia we frazie. Bolec pisząc najwyraźniej czuje się jak ryba w wodzie. Teksty są zarówno lekkie, jak i trudniejsze i ostre. Słowo wsparte jest solidnymi samplami i bardzo dobrym miksem. Ciekawe przeskoki od standardów (\"Lolita\", \"Mój czas\") do psychodelicznych wręcz trip-hopowych brzmień (\"Dym\", \"Branża\"). Bolec naprawdę się postarał, jeśli wziąć pod uwagę, że muzyka i słowa na krążku są wyłącznie jego roboty. Mam nadzieję, że ta płyta spodoba wam się tak bardzo, jak mi. Na pewno nie można jej pominąć. 4/5"
   }
 ];
 
@@ -372,7 +388,9 @@ const reviews = [
    LOGIKA STRONY — nie musisz tego edytować
 ============================================= */
 
-document.getElementById('update-date').textContent = new Date().toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' });
+const dateStr = new Date().toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' });
+document.getElementById('last-update').textContent = dateStr;
+if(document.getElementById('update-date')) document.getElementById('update-date').textContent = dateStr;
 
 const PL_ALPHA = 'AĄBCĆDEĘFGHIJKLŁMNŃOÓPQRSŚTUVWXYZŹŻ'.split('');
 
@@ -383,14 +401,32 @@ function getKey(str) {
 
 
 let filtered = [];
+let activeFilter = null;
+
+function setFilter(type, value) {
+  activeFilter = { type, value };
+  document.getElementById('filter-bar').classList.add('active');
+  document.getElementById('filter-label').textContent = value;
+  document.getElementById('search').value = '';
+  filterAndRender();
+}
+
+function clearFilter() {
+  activeFilter = null;
+  document.getElementById('filter-bar').classList.remove('active');
+  filterAndRender();
+}
 
 function filterAndRender() {
   const q = document.getElementById('search').value.toLowerCase().trim();
-  filtered = reviews.filter(r =>
-    r.album.toLowerCase().includes(q) ||
-    r.artist.toLowerCase().includes(q) ||
-    (r.genre && r.genre.toLowerCase().includes(q))
-  );
+  filtered = reviews.filter(r => {
+    if (activeFilter) {
+      if (activeFilter.type === 'author') return r.author === activeFilter.value;
+      if (activeFilter.type === 'publication') return r.publication === activeFilter.value;
+    }
+    return r.album.toLowerCase().includes(q) ||
+      r.artist.toLowerCase().includes(q);
+  });
   render();
 }
 
@@ -432,11 +468,8 @@ function render() {
           <div class="review-info">
             <div class="review-title">${r.album}</div>
             <div class="review-artist">${r.artist}</div>
-            <div class="review-meta">
-              <span>${r.year}</span>
-              ${r.genre ? `<span class="genre-tag">${r.genre}</span>` : ''}
-            </div>
-            ${(r.author || r.publication) ? `<div class="review-byline">${r.author ? `<span>${r.author}</span>` : ''}${r.author && r.publication ? ' &mdash; ' : ''}${r.publication ? `<span class="review-publication">${r.publication}</span>` : ''}</div>` : ''}
+            <div class="review-meta"><span>${r.year}</span></div>
+            ${(r.author || r.publication) ? `<div class="review-byline">${r.author ? `<span class="filter-link" onclick="setFilter('author', '${r.author.replace(/'/g, "\'")}')"> ${r.author}</span>` : ''}${r.author && r.publication ? ' &mdash; ' : ''}${r.publication ? `<span class="review-publication filter-link" onclick="setFilter('publication', '${r.publication.replace(/'/g, "\'")}')"> ${r.publication}</span>` : ''}</div>` : ''}
             ${r.text ? `<div class="review-text">${r.text}</div>` : ''}
           </div>
         </article>
