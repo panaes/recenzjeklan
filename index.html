@@ -317,7 +317,7 @@
   <main class="main-content" id="content"></main>
 </div>
 
-<footer>&copy; Recenzje z Klanu</footer>
+<footer>&copy; <span id="footer-year"></span> Recenzje z Klanu</footer>
 
 <script>
 /* =============================================
@@ -372,6 +372,7 @@ const reviews = [
 
 const dateStr = new Date().toLocaleDateString('pl-PL', { year: 'numeric', month: 'long', day: 'numeric' });
 document.getElementById('last-update').textContent = dateStr;
+document.getElementById('footer-year').textContent = new Date().getFullYear();
 
 const PL_ALPHA = ['0-9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
 
