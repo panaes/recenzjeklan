@@ -238,161 +238,6 @@
   .recent-cover:hover { border-color: var(--accent); transform: scale(1.04); }
   .recent-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-  .add-form-toggle {
-    display: block;
-    margin: 2rem 2rem 0;
-    padding: 8px 16px;
-    background: transparent;
-    border: 1px solid var(--accent2);
-    border-radius: 6px;
-    color: var(--accent);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-
-  .add-form-toggle:hover { background: var(--surface); }
-
-  .add-form {
-    display: none;
-    margin: 1rem 2rem 2rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1.5rem;
-  }
-
-  .add-form.open { display: block; }
-
-  .add-form h3 {
-    font-family: 'DM Serif Display', serif;
-    font-size: 16px;
-    font-weight: 400;
-    color: var(--text);
-    margin-bottom: 1rem;
-  }
-
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 12px;
-  }
-
-  .form-field { display: flex; flex-direction: column; gap: 4px; }
-  .form-field.full { grid-column: 1 / -1; }
-
-  .form-field label {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-
-  .form-field input,
-  .form-field textarea {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 300;
-    padding: 8px 12px;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
-  .form-field input:focus,
-  .form-field textarea:focus { border-color: var(--accent2); }
-  .form-field textarea { resize: vertical; min-height: 100px; }
-  .form-field input::placeholder,
-  .form-field textarea::placeholder { color: #444; }
-
-  .form-compilation {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-    font-size: 13px;
-    color: var(--muted);
-    cursor: pointer;
-  }
-
-  .form-compilation input { width: auto; }
-
-  .form-actions { display: flex; gap: 10px; margin-bottom: 1rem; }
-
-  .btn-generate {
-    padding: 8px 20px;
-    background: var(--accent);
-    border: none;
-    border-radius: 6px;
-    color: #000;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: opacity 0.15s;
-  }
-
-  .btn-generate:hover { opacity: 0.85; }
-
-  .btn-clear {
-    padding: 8px 16px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    color: var(--muted);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    cursor: pointer;
-  }
-
-  .form-output {
-    display: none;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 1rem;
-  }
-
-  .form-output.visible { display: block; }
-
-  .form-output label {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--muted);
-    display: block;
-    margin-bottom: 8px;
-  }
-
-  .form-output pre {
-    font-family: monospace;
-    font-size: 12px;
-    color: var(--accent);
-    white-space: pre-wrap;
-    word-break: break-all;
-    margin-bottom: 10px;
-  }
-
-  .btn-copy {
-    padding: 6px 14px;
-    background: transparent;
-    border: 1px solid var(--accent2);
-    border-radius: 6px;
-    color: var(--accent);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
-
-  .btn-copy:hover { background: var(--surface); }
 
   footer {
     border-top: 1px solid var(--border);
@@ -407,8 +252,6 @@
     .alpha-bar { padding: 0.5rem 1rem; }
     .main-content { padding: 1.5rem 1rem; }
     .cover { width: 56px; height: 56px; }
-    .form-grid { grid-template-columns: 1fr; }
-    .add-form { margin: 1rem; }
   }
 </style>
 </head>
@@ -432,52 +275,6 @@
   <main class="main-content" id="content"></main>
 </div>
 
-<button class="add-form-toggle" onclick="toggleForm()">+ Dodaj recenzję</button>
-<div class="add-form" id="add-form">
-  <h3>Nowa recenzja</h3>
-  <div class="form-grid">
-    <div class="form-field">
-      <label>Wykonawca</label>
-      <input type="text" id="f-artist" placeholder="np. Bolec" />
-    </div>
-    <div class="form-field">
-      <label>Album</label>
-      <input type="text" id="f-album" placeholder="np. Żeby było miło" />
-    </div>
-    <div class="form-field">
-      <label>Rok</label>
-      <input type="number" id="f-year" placeholder="np. 1997" />
-    </div>
-    <div class="form-field">
-      <label>Okładka (nazwa pliku)</label>
-      <input type="text" id="f-cover" placeholder="np. bolec-zeby_bylo_milo.jpg" />
-    </div>
-    <div class="form-field">
-      <label>Autor recenzji</label>
-      <input type="text" id="f-author" placeholder="np. DJ Splif" />
-    </div>
-    <div class="form-field">
-      <label>Publikacja</label>
-      <input type="text" id="f-publication" placeholder="np. Magazyn Klan nr 1 (1997)" />
-    </div>
-    <div class="form-field full">
-      <label>Treść recenzji</label>
-      <textarea id="f-text" placeholder="Wpisz treść recenzji..."></textarea>
-    </div>
-  </div>
-  <label class="form-compilation">
-    <input type="checkbox" id="f-compilation" /> To jest składanka (kompilacja)
-  </label>
-  <div class="form-actions">
-    <button class="btn-generate" onclick="generateCode()">Generuj kod</button>
-    <button class="btn-clear" onclick="clearForm()">Wyczyść</button>
-  </div>
-  <div class="form-output" id="form-output">
-    <label>Skopiuj i wklej na GitHubie przed ostatnim <code style="color:var(--text)">];</code></label>
-    <pre id="form-code"></pre>
-    <button class="btn-copy" onclick="copyCode()">Kopiuj do schowka</button>
-  </div>
-</div>
 
 <footer>&copy; <span id="footer-year"></span> Recenzje z Klanu</footer>
 
@@ -667,7 +464,7 @@ function render() {
             <div class="review-artist filter-link" onclick="setFilter('artist', '${r.artist}')">${r.artist}</div>
             <div class="review-meta"><span>${r.year}</span></div>
             ${(r.author || r.publication) ? `<div class="review-byline">${r.author ? `<span class="filter-link" onclick="setFilter('author', '${r.author.replace(/'/g, "\\'")}')"> ${r.author}</span>` : ''}${r.author && r.publication ? ' &mdash; ' : ''}${r.publication ? `<span class="review-publication filter-link" onclick="setFilter('publication', '${r.publication.replace(/'/g, "\\'")}')"> ${r.publication}</span>` : ''}</div>` : ''}
-            ${r.text ? `<div class="review-text">${r.text}</div>` : ''}
+            ${r.text ? `<div class="review-text">${r.text.replace(/\n/g, '<br>')}</div>` : ''}
           </div>
         </article>
       `).join('')}
@@ -698,59 +495,6 @@ function selectLetter(l) {
   filterAndRender();
 }
 
-function toggleForm() {
-  document.getElementById('add-form').classList.toggle('open');
-}
-
-function clearForm() {
-  ['f-artist','f-album','f-year','f-cover','f-author','f-publication','f-text'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  document.getElementById('f-compilation').checked = false;
-  document.getElementById('form-output').classList.remove('visible');
-}
-
-function generateCode() {
-  const artist = document.getElementById('f-artist').value.trim();
-  const album = document.getElementById('f-album').value.trim();
-  const year = document.getElementById('f-year').value.trim();
-  const cover = document.getElementById('f-cover').value.trim();
-  const author = document.getElementById('f-author').value.trim();
-  const publication = document.getElementById('f-publication').value.trim();
-  const text = document.getElementById('f-text').value.trim();
-  const compilation = document.getElementById('f-compilation').checked;
-
-  if (!artist || !album || !year) {
-    alert('Wypełnij przynajmniej: wykonawca, album i rok.');
-    return;
-  }
-
-  const escape = s => s.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-  const baseUrl = 'https://panaes.github.io/recenzjeklan/covers/';
-
-  let code = '  ,\n  {\n';
-  code += '    album: "' + escape(album) + '",\n';
-  code += '    artist: "' + escape(artist) + '",\n';
-  code += '    year: ' + year + ',\n';
-  if (compilation) code += '    compilation: true,\n';
-  code += '    cover: "' + (cover ? baseUrl + cover : '') + '",\n';
-  if (author) code += '    author: "' + escape(author) + '",\n';
-  if (publication) code += '    publication: "' + escape(publication) + '",\n';
-  if (text) code += '    text: "' + escape(text) + '"\n';
-  code += '  }';
-
-  document.getElementById('form-code').textContent = code;
-  document.getElementById('form-output').classList.add('visible');
-}
-
-function copyCode() {
-  const code = document.getElementById('form-code').textContent;
-  navigator.clipboard.writeText(code).then(() => {
-    const btn = document.querySelector('.btn-copy');
-    btn.textContent = 'Skopiowano!';
-    setTimeout(() => btn.textContent = 'Kopiuj do schowka', 2000);
-  });
-}
 
 filterAndRender();
 </script>
